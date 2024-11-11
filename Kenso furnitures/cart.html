@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furniture Website</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!--font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Optional styles for cart display */
+        #cart {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .cart-image {
+            width: 50px;
+            height: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .cart-item img {
+            margin-right: 10px;
+        }
+        .remove-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+
+
+</head>
+<body>
+ <!-- Header Start -->
+ <div class="header">
+    <nav>
+        <input type="checkbox" id="show-search">
+        <input type="checkbox" id="show-menu">
+        <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
+        <div class="content">
+            <div class="logo"><a href="index.html"><img src="logo.png" alt=""></a></div>
+
+            <ul class="links">
+                <li><a href="index.html" id="first">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#review">Reviews</a></li>
+            </ul>
+        </div>
+        <label for="show-search" class="search-icon"><i class="fas fa-search"></i></label>
+        <form action="#" class="search-box">
+            <input type="text" placeholder="Search" required>
+            <button type="submit" class="go-icon"><i class="fas fa-long-arrow-alt-right"></i></button>
+        </form>
+
+    </nav>
+</div>
+<!-- Header End -->
+
+
+<!-- Cart Section Start -->
+
+<h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3 id="total-price">Total Price: $0</h3>
+    
+    <script>
+        // Function to display cart items and calculate total price
+        function displayCartItems() {
+            const cartContainer = document.getElementById('cart-items');
+            const totalPriceElement = document.getElementById('total-price');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cartContainer.innerHTML = ''; // Clear current cart display
+            let totalPrice = 0; // Initialize total price
+
+            cart.forEach((item, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <div>
+                        <img src="${item.image}" alt="${item.name}" class="cart-image">
+                        <p>${item.name} - ${item.price}</p>
+                    </div>
+                    <button class="remove-button" data-index="${index}">Remove</button>
+                `;
+                cartContainer.appendChild(cartItem);
+
+                // Parse price to calculate total (assuming price format is "Price $number")
+                const priceValue = parseFloat(item.price.replace('$', ''));
+                totalPrice += priceValue; // Add to total price
+            });
+
+            // Update total price display
+            totalPriceElement.innerHTML = `Total Price: $${totalPrice.toFixed(2)}`;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+            }
+
+            // Add event listeners for remove buttons
+            const removeButtons = document.querySelectorAll('.remove-button');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', removeCartItem);
+            });
+        }
+
+        // Function to remove a cart item
+        function removeCartItem(event) {
+            const index = event.target.getAttribute('data-index');
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1); // Remove item from the cart
+            localStorage.setItem('cart', JSON.stringify(cart)); // Update local storage
+            displayCartItems(); // Refresh the display
+        }
+
+        // Call the function to display items when the page loads
+        window.onload = displayCartItems;
+    </script>
+
+        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+    
+
+<script>
+    // JavaScript for redirecting to the checkout page
+    document.getElementById('checkout-btn').addEventListener('click', function() {
+        window.location.href = 'checkout.html'; // Update with your actual checkout page file name
+    });
+</script>
+
+
+<script src="script.js"></script>
+
+
+
+
+
+</body>
